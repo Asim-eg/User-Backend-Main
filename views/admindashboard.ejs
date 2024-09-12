@@ -1,0 +1,178 @@
+<!-- admindashboard.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css">
+</head>
+
+<body class="bg-gray-700 text-white">
+  <%- include("navbar", { user: admin }); -%>
+    <div class="flex flex-column h-screen bg-gray-800 text-white">
+      <div class="p-[10rem]">
+        <h1 class="text-4xl font-bold text-center">Admin Dashboard</h1>
+        <table class="table-auto w-full">
+          <thead>
+            <tr>
+              <th class="p-2">ID</th>
+              <th class="p-2">Username</th>
+              <th class="p-2">Email</th>
+              <th class="p-2">isAdmin</th>
+              <th class="p-2">isSuspend</th>
+              <th class="p-2">SuspendReason</th>
+              <th class="p-2">isBlocked</th>
+              <th class="p-2">BlockedReason</th>
+              <th class="p-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <input type="hidden" id="admintoken" value="<%= admin.token %>">
+            <% users.forEach(function(user,index) { %>
+              <tr>
+                <td class="border p-2 text-center">
+                  <%= user._id %>
+                </td>
+
+                <td class="border p-2 text-center">
+                  <input id="username <%= index %>" type="text" class="form-input bg-gray-700 text-white"
+                    value="<%= user.username %>" />
+                </td>
+                <td class="border p-2 text-center">
+                  <input id="email <%= index %>" type="text" class="form-input bg-gray-700 text-white"
+                    value="<%= user.email %>" />
+                </td>
+                <td class="border p-2 text-center">
+                  <select id="isAdmin <%= index %>" class="form-select bg-gray-700 text-white">
+                    <option value="true" <%=user.isAdmin ? 'selected' : '' %>>True</option>
+                    <option value="false" <%=!user.isAdmin ? 'selected' : '' %>>False</option>
+                  </select>
+                </td>
+                <td class="border p-2 text-center">
+                  <select id="isSuspend <%= index %>" class="form-select bg-gray-700 text-white">
+                    <option value="true" <%=user.isSuspend ? 'selected' : '' %>>True</option>
+                    <option value="false" <%=!user.isSuspend ? 'selected' : '' %>>False</option>
+                  </select>
+                </td>
+                <td class="border p-2 text-center">
+                  <input id="SuspendReason <%= index %>" type="text" class="form-input bg-gray-700 text-white"
+                    value="<%= user.SuspendReason %>" />
+                </td>
+                <td class="border p-2 text-center">
+                  <select id="isBlocked <%= index %>" class="form-select bg-gray-700 text-white">
+                    <option value="true" <%=user.isBlocked ? 'selected' : '' %>>True</option>
+                    <option value="false" <%=!user.isBlocked ? 'selected' : '' %>>False</option>
+                  </select>
+                </td>
+                <td class="border p-2 text-center">
+                  <input id="BlockedReason <%= index %>" type="text" class="form-input bg-gray-700 text-white"
+                    value="<%= user.BlockedReason %>" />
+                </td>
+
+                <td class="border p-2 text-center">
+                  <button onclick="update(this)" data-index="<%= index %>" id="updateButton<%= index %>"
+                    data-item-id="<%= user._id %>"
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Update
+                  </button>
+                  <button onclick="deleteuser(this)" data-index="<%= index %>" data-item-id="<%= user._id %>" class="bg-red-500 hover:bg-red
+                            -700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+
+                    Delete
+                  </button>
+              </tr>
+              <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+
+<script>
+  async function deleteuser(btn) {
+    if (confirm("Are you sure you want to delete this user?") == false) {
+      return;
+    }
+    // Prevent the default form submission
+    var user_id = btn.getAttribute("data-item-id");
+    var index = btn.getAttribute("data-index");
+    const token = document.getElementById("admintoken").value
+    console.log(token)
+    try {
+
+
+      const apiUrl = 'http://localhost:3000/api/admins/delete/';
+
+      // Create a request object
+
+      // Make the API request
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+
+        },
+      }
+
+      const result = await axios.post(apiUrl + user_id, {}, config)
+      alert("User Deleted Successfully");
+      window.location.reload();
+
+    }
+    catch (err) {
+      console.log(err)
+      alert(err);
+    }
+
+
+
+  }
+
+  async function update(btn) {
+    // Prevent the default form submission
+    var user_id = btn.getAttribute("data-item-id");
+    var index = btn.getAttribute("data-index");
+    // Now you can use the itemId in your function
+    const username = document.getElementById("username " + index).value;
+    const email = document.getElementById("email " + index).value
+
+    const isAdmin = document.getElementById("isAdmin " + index).value;
+    const isSuspend = document.getElementById("isSuspend " + index).value;
+    const SuspendReason = document.getElementById("SuspendReason " + index).value || "";
+    const isBlocked = document.getElementById("isBlocked " + index).value;
+    const BlockedReason = document.getElementById("BlockedReason " + index).value || "";
+    const token = document.getElementById("admintoken").value
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+
+      },
+    };
+    // Replace 'your-api-endpoint' with the actual login API endpoint
+    try {
+
+
+      const apiUrl = 'http://localhost:3000/api/admins/update/';
+
+      // Create a request object
+
+      // Make the API request
+      const result = await axios.post(apiUrl + user_id, { username, email, isAdmin, isBlocked, isSuspend, SuspendReason, BlockedReason }, config)
+      if (result.status === 200) {
+        alert("User Updated Successfully");
+        window.location.reload();
+      }
+    }
+    catch (err) {
+      console.log(err)
+      alert(err);
+    }
+  };
+
+</script>
+
+</html>

@@ -1,0 +1,49 @@
+<!-- login.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Import Tailwind CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css">
+</head>
+
+<body>
+    <!-- Import navbar from navbar.ejs -->
+    <%- include("navbar", {user: null}); -%>
+
+        <div class=" flex flex-column  w-full h-screen bg-gray-800 text-white ">
+            <form action="/api/users/login" class="m-10" method="POST" id="loginForm">
+                <div class="mb-4">
+                    <label class="block  font-bold mb-2" for="email">
+                        Email
+                    </label>
+                    <input id="email"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email" type="email" placeholder="Email" name="email">
+                </div>
+                <div class="mb-4">
+                    <label class="block  font-bold mb-2" for="password">
+                        Password
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="password" type="password" placeholder="Password" name="password">
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        type="submit">
+                        Login
+                    </button>
+
+                </div>
+                Forgot Password? <a href="/forgetpassword" class="text-blue-400">Click Here</a>
+            </form>
+
+        </div>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!-- navbar.ejs -->
+
+<nav class="bg-gray-800">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div class="relative flex items-center justify-between h-16">
+               
+                    <%if(user){ %>
+                        <input type="hidden" id="token" value="<%= user.token  %>">
+                        <% } %>
+                       
+            <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+                <div class="flex-shrink-0">
+                    <img class="block lg:hidden h-8  justify-start"
+                        src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg" alt="Workflow">
+                    <img class="hidden lg:block h-8 w-auto"
+                        src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
+                        alt="Workflow">
+                </div>
+                <div class="hidden sm:block sm:ml-6">
+                    <div class="flex space-x-4">
+                        <%if(user){ %>
+                            <%if(!user.isAdmin){ %>
+                                <a href="/"
+                                    class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
+                                <% } else { %>
+                                    <a href="/dashboard"
+                                        class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
+                                    <% } %>
+                                        <% } %>
+
+                    </div>
+                </div>
+            </div>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <button onclick="logout()"
+                    class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                    <%if(!user){ %>
+                        <span></span>
+                        <% } else { %>
+                            <span>Logout</span>
+                            <%} %>
+
+
+
+                </button>
+
+                <!-- Profile dropdown -->
+                <div class="ml-3 relative">
+                    <div>
+                        <%if(!user){ %>
+                            <a href="/signup"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="submit">
+                                Sign Up
+                            </a>
+                            <a href="/login"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="submit">
+                                Login
+                            </a>
+
+                            <% } else { %>
+                                <button type="button"
+                                    class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                                    id="user-menu" aria-expanded="false" aria-haspopup="true">
+                                    <img class="h-8 w-8 rounded-full"
+                                        src="https://avatars.githubusercontent.com/u/59870711?v=4" alt="">
+                                </button>
+                                <%} %>
+
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+
+<script>
+    async function logout() {
+        // Prevent the default form submission
+        const token = document.getElementById("token").value;
+        console.log(token);
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+
+            },
+        };
+        // Replace 'your-api-endpoint' with the actual login API endpoint
+        try {
+
+
+            const apiUrl = 'http://localhost:3000/api/users/logout';
+
+            // Create a request object
+
+            // Make the API request
+            const result = await axios.post(apiUrl, {}, config)
+            if (result.status === 200) {
+                alert("Logout");
+                window.location.href = "/logout";
+            }
+        }
+        catch (err) {
+            console.log(err)
+            alert(err.response.data);
+        }
+    };
+
+</script>

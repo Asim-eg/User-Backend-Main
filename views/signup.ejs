@@ -1,0 +1,89 @@
+<!-- signup.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <!-- Import Tailwind CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css">
+</head>
+
+<body>
+    <!-- Import navbar from navbar.ejs -->
+    <%- include("navbar", {user: null}); -%>
+
+        <div class=" flex flex-column  w-full h-screen bg-gray-800 text-white ">
+            <form id="signupForm" class="m-10">
+                <div class="mb-4">
+                    <label class="block  font-bold mb-2" for="email">
+                        Email
+                    </label>
+                    <input id="email"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email" type="email" placeholder="Email" name="email">
+                </div>
+                <div class="mb-4">
+                    <label class="block  font-bold mb-2" for="password">
+                        Password
+                    </label>
+                    <input id="password"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="password" type="password" placeholder="Password" name="password">
+                </div>
+                <div class="mb-4">
+                    <label class="block  font-bold mb-2" for="confirmPassword">
+                        Confirm Password
+                    </label>
+                    <input id="confirmPassword"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="confirmPassword" type="password" placeholder="Confirm Password" name="confirmPassword">
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        type="submit">
+                        Sign Up
+                    </button>
+                </div>
+            </form>
+        </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+
+<script>
+    document.getElementById("signupForm").addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+        // Replace 'your-api-endpoint' with the actual login API endpoint
+        try {
+
+
+            const apiUrl = 'http://localhost:3000/api/users/signup';
+
+            // Create a request object
+
+            // Make the API request
+            const result = await axios.post(apiUrl, { email, password })
+            if (result.status == 200) {
+                window.location.href = "/"
+            }
+        }
+        catch (err) {
+            console.log(err)
+            alert(err.response.data);
+        }
+    });
+
+</script>
+
+</html>
